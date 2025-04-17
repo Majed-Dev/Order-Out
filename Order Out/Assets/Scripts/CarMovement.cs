@@ -10,6 +10,11 @@ public class CarMovement : MonoBehaviour
     //Input Variables
     float moveInput;
     float turnInput;
+
+    public GameObject pizza;
+    public Restaurant restaurant;
+    public bool hasOrder = false;
+
     
     void Start()
     {
@@ -21,6 +26,11 @@ public class CarMovement : MonoBehaviour
     {
         moveInput = Input.GetAxis("Vertical");
         turnInput = Input.GetAxis("Horizontal");
+        if(restaurant.GetActiveDestiation()!= null)
+        {
+            pizza.transform.LookAt(restaurant.GetActiveDestiation().transform);
+        }
+        
     }
     void FixedUpdate()
     {
@@ -46,8 +56,17 @@ public class CarMovement : MonoBehaviour
             Quaternion turnRotation = Quaternion.Euler(0f, turn, 0f);
             rb.MoveRotation(rb.rotation * turnRotation);
         }
-
-
-        
+    }
+    public void TakeOrder()
+    {
+        pizza.SetActive(true);
+        hasOrder = true;
+    }
+    public void OrderDelivered()
+    {
+        pizza.SetActive(false);
+        hasOrder = false;
+        SoundManager.Instance.PlaySFX(SoundManager.Instance.complete);
+        restaurant.score++;
     }
 }
